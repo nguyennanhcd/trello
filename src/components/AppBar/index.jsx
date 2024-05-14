@@ -60,6 +60,7 @@ function AppBar() {
 
           <Profiles/>
         </Box>
+
       </Box>
     </div>
   )
