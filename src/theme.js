@@ -20,6 +20,67 @@ const theme = extendTheme({
         secondary: orange
       }
     }
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '*::-webkit-scrollbar': {
+            backgroundColor: ' #fff',
+            width: '8px',
+            height: '8px'
+          },
+          '*::-webkit-scrollbar-track': {
+            backgroundColor: ' #fff'
+          },
+          '*::-webkit-scrollbar-thumb': {
+            backgroundColor: '#babac0',
+            borderRadius: '8px',
+            border: ' 4px solid #fff'
+          },
+          '*::-webkit-scrollbar-button': {
+            display: 'none'
+          }
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none'
+        }
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => {
+          return {
+            color: theme.palette.primary.main
+          }
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => {
+          return {
+            color: theme.palette.primary.main,
+            fontSize: '0,875rem',
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.light
+            },
+            '&:hover': {
+              '.MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.palette.primary.main
+              }
+            },
+            '& fieldset': {
+              borderWidth: '1px !important'
+            }
+          }
+        }
+      }
+    }
   }
 })
 
