@@ -4,8 +4,8 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 // Create a theme instance.
 const theme = extendTheme({
   trello: {
-    navBarHeight: '48px',
-    boardBarHeight: '58px'
+    navBarHeight: '60px',
+    boardBarHeight: '60px'
   },
   colorSchemes: {
     light: {
