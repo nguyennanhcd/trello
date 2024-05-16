@@ -14,6 +14,7 @@ import Divider from '@mui/material/Divider'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 function Workspaces() {
+
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -22,6 +23,7 @@ function Workspaces() {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  
   return (
     <Box>
       <Button
