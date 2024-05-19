@@ -17,7 +17,8 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -77,9 +78,16 @@ function BoardContent({ board }) {
       const nextActiveColumn = nextColumn.find(column => column._id === activeColumn._id)
       const nextOverColumn = nextColumn.find(column => column._id === overColumn._id)
 
+      // oldColumn
       if (nextActiveColumn) {
 
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // add placeholdercard if column is empty: when all cards within the column are dragged to another cards, and there isn't a placeholdercard any card in the column
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+
+        }
 
         // reupdate cardOrderIds 
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
@@ -89,19 +97,23 @@ function BoardContent({ board }) {
         // check that if the current dragging card exists in the overColumn or not, if it exists, remove it first
         nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
 
-
         //  In the case of dragEnd, the columnId data in the card must be updated after dragging the card between different columns
         const rebuild_activeDraggingCardData = {
           ...activeDraggingCardData,
           columnId: nextOverColumn._id
         }
-
+        
         // Adding current dragging card to overColumn by new index
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
+        
+        // remove placeholdercard if column is empty 
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
+
 
         // reupdate cardOrderIds 
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
+      
       return nextColumn
     })
   }
