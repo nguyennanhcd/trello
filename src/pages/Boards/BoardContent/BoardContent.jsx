@@ -5,14 +5,11 @@ import {
   DndContext,
   MouseSensor,
   TouchSensor,
-  // PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  closestCenter,
   pointerWithin,
-  rectIntersection,
   getFirstCollision,
   closestCorners
 } from '@dnd-kit/core'
@@ -255,13 +252,19 @@ function BoardContent({ board }) {
 
     // tìm các điểm giao nhau, va chạm với con trỏ, intersection with pointer
     const pointerIntersection = pointerWithin(args)
+
+    // if pointerIntersection is an empty array, return and do nothing
+    // fix flickering bug thoroughly in case: 
+    // drag a card with big image cover out of the dnd area
+    if (!pointerIntersection?.length) return
     
     // collisions detection will return an array of collisions here
-    const intersections = !!pointerIntersection?.length 
-      ? pointerIntersection 
-      : rectIntersection(args)
+    // const intersections = !!pointerIntersection?.length 
+    //   ? pointerIntersection 
+    //   : rectIntersection(args)
 
-    let overId = getFirstCollision(intersections, 'id')
+    // get first overId in pointerIntersection
+    let overId = getFirstCollision(pointerIntersection, 'id')
 
     if ( overId )
     {
@@ -271,7 +274,7 @@ function BoardContent({ board }) {
       if ( checkColumn )
       {
         // console.log('overIdbefore: ', overId)
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(container => {
             return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id))
