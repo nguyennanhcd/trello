@@ -5,8 +5,8 @@
 export const mockData = {
   board: {
     _id: 'board-id-01',
-    title: 'TrungQuanDev MERN Stack Board',
-    description: 'Pro MERN stack Course',
+    title: 'Description here ',
+    description: 'Pro MERN ',
     type: 'public', // 'private'
     ownerIds: [], // Những users là Admin của board
     memberIds: [], // Những users là member bình thường của board
@@ -33,7 +33,7 @@ export const mockData = {
             title: 'Title of card 01',
             description: 'Markdown Syntax (sẽ ở khóa nâng cao nhé)',
             cover:
-              'https://trungquandev.com/wp-content/uploads/2022/07/fair-mern-stack-advanced-banner-trungquandev.jpg',
+              'https://scontent.fsgn2-11.fna.fbcdn.net/v/t39.30808-1/438260241_1689681748509886_3914010373219127903_n.jpg?stp=dst-jpg_p200x200&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGi0Igi3iLbi1zdyPzLmQNXg-AmEcbVR_KD4CYRxtVH8oyAayImkvFTL3k9sEDBnfX_vipyn2KRLgQFf5Nh_kUC&_nc_ohc=F2pKhHDG3BoQ7kNvgEX4EMF&_nc_ht=scontent.fsgn2-11.fna&oh=00_AYCJMzzGvSNPNZre-wIi52M--ZHTQGexLJz5XGirZxC8hA&oe=664F2088',
             memberIds: ['test-user-id-01'],
             comments: ['test comment 01', 'test comment 02'],
             attachments: ['test attachment 01', 'test attachment 02', 'test attachment 03']
