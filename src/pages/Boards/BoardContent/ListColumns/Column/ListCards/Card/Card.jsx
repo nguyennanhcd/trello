@@ -25,7 +25,7 @@ function Card({ card }) {
   }
 
   const shouldShowCardAction = () => {
-    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachment?.length
+    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
 
   return (
@@ -52,7 +52,7 @@ function Card({ card }) {
         <CardActions sx={{ p: '0 4px 8px 4px' }}>
           {!!card?.memberIds?.length && <Button size="small" startIcon={<PersonIcon/>}>{card?.memberIds?.length}</Button> }
           {!!card?.comments?.length && <Button size="small" startIcon={<CommentIcon/>}>{card?.comments?.length}</Button> }
-          {!!card?.attachment?.length && <Button size="small" startIcon={<AttachmentIcon/>}>{card?.attachment?.length}</Button>}
+          {!!card?.attachments?.length && <Button size="small" startIcon={<AttachmentIcon/>}>{card?.attachments?.length}</Button>}
         </CardActions>
       }
 

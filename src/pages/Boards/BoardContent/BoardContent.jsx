@@ -10,10 +10,14 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  closestCenter
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  getFirstCollision,
+  closestCorners
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep } from 'lodash'
@@ -39,6 +43,9 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
+
+  // the last collision ( handle collision detection algorithm)
+  const lastOverId = useRef(null)
   
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -239,11 +246,57 @@ function BoardContent({ board }) {
     })
   }
 
+  // Customize the collision detection algorithm to optimize the drag-and-drop functionality for cards between multiple columns.
+  const collisionDetectionStrategy = useCallback((args) => {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN)
+    {
+      return closestCorners({ ...args })
+    }
+
+    // tìm các điểm giao nhau, va chạm với con trỏ, intersection with pointer
+    const pointerIntersection = pointerWithin(args)
+    
+    // collisions detection will return an array of collisions here
+    const intersections = !!pointerIntersection?.length 
+      ? pointerIntersection 
+      : rectIntersection(args)
+
+    let overId = getFirstCollision(intersections, 'id')
+
+    if ( overId )
+    {
+      // if over is a column, we need to find a closest cardId within that collision area by using closestCenter or ClosestCorners.  However, using closestCenter brings a smoother experience 
+      const checkColumn = orderedColumns.find(column => column._id === overId)
+
+      if ( checkColumn )
+      {
+        // console.log('overIdbefore: ', overId)
+        overId = closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container => {
+            return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id))
+          })
+        })[0]?.id
+        // console.log('overIdafter: ', overId)
+      }
+
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    return lastOverId.current ? [{ id: lastOverId.current }] : []
+
+  }, [activeDragItemType, orderedColumns])
+
   return (
     <DndContext 
       sensors={sensors}
       //collision detection algorithm ( thuật toán phát hiện va chạm ), ( fix bug drag big card to another column)
-      collisionDetection={closestCenter}
+      // if use closestCorner, there is a flickering bug + data bias
+      // collisionDetection={closestCenter}
+
+      // custom collision detection
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd} 
