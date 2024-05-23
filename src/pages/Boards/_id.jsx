@@ -2,7 +2,6 @@ import { Container } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
-import { mockData } from '~/apis/mock-data'
 import { useState, useEffect } from 'react'
 import { fetchBoardDetailsAPI } from '~/apis'
 
@@ -11,13 +10,12 @@ const Board = () => {
 
   useEffect(() => {
     // tạm thời fix cứng boardId, flow chuẩn chỉnh về sau sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL về
-    const boardId = '664df71ad78817d5029cb616'
+    const boardId = '664eaf85f6744013b6ae4f50'
     // call API
-    fetchBoardDetailsAPI(boardId).then((boardData) => {
+    fetchBoardDetailsAPI(boardId).then(boardData => {
       setBoard(boardData)
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  })
+  }, [])
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
