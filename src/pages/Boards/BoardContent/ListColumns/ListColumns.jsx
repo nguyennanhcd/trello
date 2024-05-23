@@ -6,6 +6,9 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { toast } from 'react-toastify'
+import { Zoom } from 'react-toastify'
+
 
 
 function ListColumns({ columns }) {
@@ -25,6 +28,9 @@ function ListColumns({ columns }) {
 
   const handleAddNewColumn = () => {
     if (!columnInputValue) {
+      toast.error('Please fill in this box', {
+        transition: Zoom
+      })
       return
     }
 

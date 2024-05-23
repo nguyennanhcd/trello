@@ -15,6 +15,9 @@ import { Button } from '@mui/material'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { toast } from 'react-toastify'
+import { Zoom } from 'react-toastify'
+
 
 import { useState } from 'react'
 import Box from '@mui/material/Box'
@@ -54,6 +57,9 @@ function Column({ column }) {
 
   const handleAddNewCard = () => {
     if (!cardInputValue) {
+      toast.error('Please fill in this box', {
+        transition: Zoom
+      })
       return
     }
 
