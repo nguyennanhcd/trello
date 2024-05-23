@@ -194,6 +194,7 @@ function Column({ column }) {
                 size='small'
                 variant='outlined'
                 autoFocus
+                data-no-dnd='true'
                 sx={{
                   '& label': { color: 'text.primary' },
                   '& input': {
