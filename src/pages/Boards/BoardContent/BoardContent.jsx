@@ -1,10 +1,8 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import mapOrder from '~/utils/sorts'
-import { 
+import {
   DndContext,
-  MouseSensor,
-  TouchSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -13,6 +11,7 @@ import {
   getFirstCollision,
   closestCorners
 } from '@dnd-kit/core'
+import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensor'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Column from './ListColumns/Column/Column'
@@ -44,7 +43,7 @@ function BoardContent({ board }) {
 
   // the last collision ( handle collision detection algorithm)
   const lastOverId = useRef(null)
-  
+
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
   }, [board])
@@ -69,7 +68,7 @@ function BoardContent({ board }) {
       // new logic 'newCardIndex' ( up or down of overCard ) take from the code of dndkitlib
       let newCardIndex
       const isBelowOverItem = active.rect.current.translated &&
-          active.rect.current.translated.top > over.rect.top + over.rect.height
+        active.rect.current.translated.top > over.rect.top + over.rect.height
 
       const modifier = isBelowOverItem ? 1 : 0
       newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
@@ -102,10 +101,10 @@ function BoardContent({ board }) {
           ...activeDraggingCardData,
           columnId: nextOverColumn._id
         }
-        
+
         // Adding current dragging card to overColumn by new index
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
-        
+
         // remove placeholdercard if column is empty 
         nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
 
@@ -113,7 +112,7 @@ function BoardContent({ board }) {
         // reupdate cardOrderIds 
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
-      
+
       return nextColumn
     })
   }
@@ -125,7 +124,7 @@ function BoardContent({ board }) {
     setActiveDragItemData(event?.active?.data?.current)
 
     //
-    if ( event?.active?.data?.current?.columnId) {
+    if (event?.active?.data?.current?.columnId) {
       setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id))
     }
   }
@@ -136,11 +135,11 @@ function BoardContent({ board }) {
 
     //do nothing when drag a column
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
-    
+
     // If you drag a card, you need to handle some action to drag cards between columns
     const { active, over } = event
 
-    if ( !active || !over ) return
+    if (!active || !over) return
 
     const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
     const { id: overCardId } = over
@@ -153,8 +152,7 @@ function BoardContent({ board }) {
 
     // handle logic here just in case drag card to a different column, if drag card to the original column position, do nothing
     // Because this is the processing part during the drag, handling after the drag is completed is a different issue in the handleDragEnd section.
-    if ( activeColumn._id !== overColumn._id ) 
-    {
+    if (activeColumn._id !== overColumn._id) {
       moveCardBetweenDifferentColumns(
         overColumn,
         overCardId,
@@ -167,15 +165,14 @@ function BoardContent({ board }) {
     }
   }
 
-  const handleDragEnd = (event) => { 
+  const handleDragEnd = (event) => {
 
     const { active, over } = event
     //Check if over or active is exist or not ( kéo linh tinh ra ngoài thì return tránh lỗi )
     if (!over || !active) return
 
     // handle drag and drop for cards
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) 
-    {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
       const { id: overCardId } = over
 
@@ -207,7 +204,7 @@ function BoardContent({ board }) {
 
         // arrayMove is used to rearrange the original Cards, use the same logic with drag and drop operattion in column
         const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex)
-        
+
         setOrderedColumns(prevColumns => {
           // clone prevColumns and then handle data change
           const nextColumn = cloneDeep(prevColumns)
@@ -226,11 +223,10 @@ function BoardContent({ board }) {
     }
 
     // handle drag and drop for column in board content
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && active.id !== over.id)
-    {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && active.id !== over.id) {
       const oldColumnIndex = orderedColumns.findIndex(c => c._id === active.id)
       const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
-  
+
       // arrayMove is used to rearrange the original Columns
       const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
       // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
@@ -238,7 +234,7 @@ function BoardContent({ board }) {
       // console.log('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
       setOrderedColumns(dndOrderedColumns)
     }
-    
+
     // all the data after dnd always must be set to null
     setActiveDragItemId(null)
     setActiveDragItemType(null)
@@ -257,8 +253,7 @@ function BoardContent({ board }) {
 
   // Customize the collision detection algorithm to optimize the drag-and-drop functionality for cards between multiple columns.
   const collisionDetectionStrategy = useCallback((args) => {
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN)
-    {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
       return closestCorners({ ...args })
     }
 
@@ -269,7 +264,7 @@ function BoardContent({ board }) {
     // fix flickering bug thoroughly in case: 
     // drag a card with big image cover out of the dnd area
     if (!pointerIntersection?.length) return
-    
+
     // collisions detection will return an array of collisions here
     // const intersections = !!pointerIntersection?.length 
     //   ? pointerIntersection 
@@ -278,13 +273,11 @@ function BoardContent({ board }) {
     // get first overId in pointerIntersection
     let overId = getFirstCollision(pointerIntersection, 'id')
 
-    if ( overId )
-    {
+    if (overId) {
       // if over is a column, we need to find a closest cardId within that collision area by using closestCenter or ClosestCorners.  However, using closestCenter brings a smoother experience 
       const checkColumn = orderedColumns.find(column => column._id === overId)
 
-      if ( checkColumn )
-      {
+      if (checkColumn) {
         // console.log('overIdbefore: ', overId)
         overId = closestCorners({
           ...args,
@@ -304,7 +297,7 @@ function BoardContent({ board }) {
   }, [activeDragItemType, orderedColumns])
 
   return (
-    <DndContext 
+    <DndContext
       sensors={sensors}
       //collision detection algorithm ( thuật toán phát hiện va chạm ), ( fix bug drag big card to another column)
       // if use closestCorner, there is a flickering bug + data bias
@@ -314,7 +307,7 @@ function BoardContent({ board }) {
       collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd} 
+      onDragEnd={handleDragEnd}
     >
       <div>
         <Box sx={{
@@ -323,11 +316,11 @@ function BoardContent({ board }) {
           height: (theme) => theme.trello.boardContentHeight,
           p: '10px 0'
         }}>
-          <ListColumns columns={ orderedColumns }/>
+          <ListColumns columns={orderedColumns} />
           <DragOverlay dropAnimation={dropAnimation}>
             {(!activeDragItemId || !activeDragItemType) && null}
-            {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData}/>}
-            {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) && <Card card={activeDragItemData}/>}
+            {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
+            {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) && <Card card={activeDragItemData} />}
           </DragOverlay>
         </Box>
       </div>
