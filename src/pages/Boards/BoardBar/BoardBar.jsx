@@ -14,9 +14,9 @@ import { capitalizeFirstLetter } from '~/utils/formatters'
 
 
 const MENU_STYLES = {
-  bgcolor:'transparent',
+  bgcolor: 'transparent',
   color: 'white',
-  border:'none',
+  border: 'none',
   paddingX: '5px',
   '&:hover': {
     bgcolor: 'primary.50'
@@ -35,51 +35,53 @@ function BoardBar({ board }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 2,
-        overflow:'auto',
+        overflow: 'auto',
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
       }}>
-        <Box sx={{ display: 'flex', alignItems:'center', gap: 2 }}>
-          <Chip 
-            sx={MENU_STYLES}
-            icon={<DashboardIcon />} 
-            label={board?.title}
-            clickable
-          />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Tooltip title={board?.description}>
+            <Chip
+              sx={MENU_STYLES}
+              icon={<DashboardIcon />}
+              label={board?.title}
+              clickable
+            />
+          </Tooltip>
 
-          <Chip 
+          <Chip
             sx={MENU_STYLES}
-            icon={<PublicIcon />} 
+            icon={<PublicIcon />}
             label={capitalizeFirstLetter(board?.type)}
             clickable
           />
 
-          <Chip 
+          <Chip
             sx={MENU_STYLES}
-            icon={<AddToDriveIcon />} 
+            icon={<AddToDriveIcon />}
             label="Add to Google Drive"
             clickable
           />
 
-          <Chip 
+          <Chip
             sx={MENU_STYLES}
-            icon={<AutoAwesomeIcon />} 
+            icon={<AutoAwesomeIcon />}
             label="Automation"
             clickable
           />
 
-          <Chip 
+          <Chip
             sx={MENU_STYLES}
-            icon={<FilterListIcon />} 
+            icon={<FilterListIcon />}
             label="Filters"
             clickable
           />
 
         </Box>
-        <Box sx={{ display: 'flex', alignItems:'center', gap: 2 }}>
-          <Button 
-            variant="outlined" 
-            startIcon={<PersonAddIcon/>}
-            sx={{ 
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<PersonAddIcon />}
+            sx={{
               color: 'white',
               borderColor: 'white',
               '&:hover ': { borderColor: 'white' }
@@ -87,7 +89,7 @@ function BoardBar({ board }) {
           >
             Invite
           </Button>
-          <AvatarGroup 
+          <AvatarGroup
             max={4}
             sx={{
               gap: '10px',
