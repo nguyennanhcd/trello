@@ -8,14 +8,14 @@ function ListCards({ cards }) {
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap:1,
+        gap: 1,
         // trick css for beautiful scrollbar
-        p: '0 5px',
+        p: '0 5px 5px 5px',
         m: '0 5px',
 
         overflowX: 'hidden',
         overflowY: 'auto !important',
-        maxHeight:  (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)} - ${theme.trello.columnHeaderHeight} - ${theme.trello.columnFooterHeight} )`,
+        maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)} - ${theme.trello.columnHeaderHeight} - ${theme.trello.columnFooterHeight} )`,
         '&::-webkit-scrollbar-thumb': {
           backgroundColor: '#ced0da',
           border: '8px',

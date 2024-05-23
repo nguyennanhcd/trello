@@ -13,6 +13,8 @@ import { ContentCopy, ContentPaste } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import { Button } from '@mui/material'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
+import TextField from '@mui/material/TextField'
+import CloseIcon from '@mui/icons-material/Close'
 
 import { useState } from 'react'
 import Box from '@mui/material/Box'
@@ -21,11 +23,11 @@ import mapOrder from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-function Column( { column }) {
-  
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ 
+function Column({ column }) {
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
-    data : { ...column }
+    data: { ...column }
   })
   const dndKitColumnStyles = {
     // touchAction: 'none',
@@ -38,8 +40,26 @@ function Column( { column }) {
     height: '100%',
     opacity: isDragging ? 0.5 : undefined
   }
-  
+
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
+
+  const [openNewCardForm, setOpenNewCardForm] = useState(false)
+  const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
+
+  const [cardInputValue, setCardInputValue] = useState('')
+  const handleChangeCardInputValue = (e) => {
+    setCardInputValue(e.target.value)
+  }
+
+  const handleAddNewCard = () => {
+    if (!cardInputValue) {
+      return
+    }
+
+    toggleOpenNewCardForm()
+    setCardInputValue('')
+  }
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -51,7 +71,7 @@ function Column( { column }) {
   }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes} >
-      <Box 
+      <Box
         {...listeners}
         sx={{
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
@@ -68,7 +88,7 @@ function Column( { column }) {
           height: (theme) => theme.trello.columnHeaderHeight,
           display: 'flex',
           alignItems: 'center',
-          justifyContent:'space-between',
+          justifyContent: 'space-between',
           p: 2,
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0')
         }}
@@ -111,11 +131,11 @@ function Column( { column }) {
               <MenuItem>
                 <ListItemIcon><AddIcon fontSize="small" /></ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
-              </MenuItem> 
+              </MenuItem>
               <MenuItem>
                 <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
                 <ListItemText>Cut</ListItemText>
-              </MenuItem> 
+              </MenuItem>
               <MenuItem>
                 <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
                 <ListItemText>Copy</ListItemText>
@@ -143,23 +163,88 @@ function Column( { column }) {
         { /* Box column footer*/}
         <Box sx={{
           height: (theme) => theme.trello.columnFooterHeight,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent:'space-between',
           p: 2
         }}
         >
-          <Button startIcon={<AddIcon/>}>Add new card</Button>
-          <Tooltip title="Drag to move">
-            <DragHandleIcon sx={{ cursor: 'pointer' }}/>
-          </Tooltip>
+          {!openNewCardForm
+            ?
+            <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'space-between' }}>
+              <Button
+                startIcon={<AddIcon />}
+                onClick={toggleOpenNewCardForm}
+              >
+                Add new card
+              </Button>
+              <Tooltip title="Drag to move">
+                <DragHandleIcon sx={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Box>
+            :
+            <Box sx={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}>
+              <TextField
+                value={cardInputValue}
+                onChange={(e) => handleChangeCardInputValue(e)}
+                label="Enter card title"
+                type="text"
+                size='small'
+                variant='outlined'
+                autoFocus
+                sx={{
+                  '& label': { color: 'text.primary' },
+                  '& input': {
+                    color: (theme) => theme.palette.primary.main,
+                    bgcolor: (theme) => theme.palette.mode === 'dark' ? '#333643' : 'white'
+                  },
+                  '& label.Mui-focused': { color: (theme) => theme.palette.primary.main },
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: (theme) => theme.palette.primary.main },
+                    '&:hover fieldset': { borderColor: (theme) => theme.palette.primary.main },
+                    '&.Mui-focused fieldset': { borderColor: (theme) => theme.palette.primary.main }
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    borderRadius: 1
+                  }
+                }}
+              />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Button
+                  variant='contained'
+                  color='success'
+                  size='small'
+                  onClick={() => handleAddNewCard()}
+                  sx={{
+                    boxShadow: 'none',
+                    border: '0.5px solid',
+                    borderColor: (theme) => theme.palette.success.main,
+                    '&:hover': { bgcolor: (theme) => theme.palette.success.main, borderWidth: 1 }
+                  }}
+                >
+                  Add
+                </Button>
+                <CloseIcon
+                  fontSize='small'
+                  onClick={toggleOpenNewCardForm}
+                  sx={{
+                    color: (theme) => theme.palette.warning.light,
+                    cursor: 'pointer'
+                  }}
+                />
+              </Box>
+            </Box>
+          }
+
         </Box>
       </Box>
 
     </div>
 
   )
-  
+
 
 }
 export default Column
