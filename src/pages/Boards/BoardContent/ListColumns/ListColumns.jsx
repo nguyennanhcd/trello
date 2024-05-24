@@ -38,7 +38,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
       title: columnInputValue
     }
 
-    await createNewColumn(newColumndata)
+    createNewColumn(newColumndata)
 
     toggleOpenNewColumnForm()
     setColumnInputValue('')

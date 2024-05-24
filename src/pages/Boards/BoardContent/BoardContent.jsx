@@ -23,7 +23,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) {
   //Require the mouse to move by 10 pixels before activating, fix the case calling event when click
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -45,7 +45,7 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   const lastOverId = useRef(null)
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumns(board.columns)
   }, [board])
 
   // In this segment, it's important to use c.cards instead of c.cardOrderIds because, in the handleDragOver step, we will complete the data for cards first before creating cardOrderIds.
@@ -202,8 +202,9 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         // take the card new position from overCard
         const newCardIndex = overColumn?.cards.findIndex(c => c._id === overCardId)
 
-        // arrayMove is used to rearrange the original Cards, use the same logic with drag and drop operattion in column
+        // arrayMove is used to rearrange the original Cards, use the same logic with drag and drop operation in column
         const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndOrderedCards.map(c => c._id)
 
         setOrderedColumns(prevColumns => {
           // clone prevColumns and then handle data change
@@ -214,11 +215,12 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
 
           // reupdate the value of cards and cardOrderIds in targerColumn
           targetColumn.cards = dndOrderedCards
-          targetColumn.cardOrderIds = targetColumn.cards.map(c => c._id)
+          targetColumn.cardOrderIds = dndOrderedCardIds
 
           return nextColumn
         })
 
+        moveCardInTheSameColumn(dndOrderedCards, dndOrderedCardIds, oldColumnWhenDraggingCard._id)
       }
     }
 
@@ -229,9 +231,9 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
 
       // arrayMove is used to rearrange the original Columns
       const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
+      setOrderedColumns(dndOrderedColumns)
 
       moveColumns(dndOrderedColumns)
-      setOrderedColumns(dndOrderedColumns)
     }
 
     // all the data after dnd always must be set to null

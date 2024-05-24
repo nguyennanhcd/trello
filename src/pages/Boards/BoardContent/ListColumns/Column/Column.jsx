@@ -44,7 +44,7 @@ function Column({ column, createNewCard }) {
     opacity: isDragging ? 0.5 : undefined
   }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column.cards
 
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
@@ -69,7 +69,7 @@ function Column({ column, createNewCard }) {
       columnId: column._id
     }
 
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     toggleOpenNewCardForm()
     setCardInputValue('')
