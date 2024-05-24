@@ -11,7 +11,7 @@ import { Zoom } from 'react-toastify'
 
 
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   /*
     SortableContext requires items as an array type value, ['id-1', 'id-2] not [{id: 'id-1}, {id: 'id-2}']
     If the the items param is passed in with an incorrect form, dragging and dropping still work but without animation
@@ -26,13 +26,19 @@ function ListColumns({ columns }) {
     setColumnInputValue(e.target.value)
   }
 
-  const handleAddNewColumn = () => {
+  const handleAddNewColumn = async () => {
     if (!columnInputValue) {
       toast.error('Please fill in this box', {
         transition: Zoom
       })
       return
     }
+
+    const newColumndata = {
+      title: columnInputValue
+    }
+
+    await createNewColumn(newColumndata)
 
     toggleOpenNewColumnForm()
     setColumnInputValue('')
@@ -51,7 +57,7 @@ function ListColumns({ columns }) {
       }}
       >
         {columns?.map(column => (
-          <Column key={column._id} column={column} />
+          <Column key={column._id} column={column} createNewCard={createNewCard} />
         ))}
 
         {!openNewColumnForm

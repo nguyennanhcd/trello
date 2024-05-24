@@ -26,7 +26,7 @@ import mapOrder from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
@@ -55,13 +55,21 @@ function Column({ column }) {
     setCardInputValue(e.target.value)
   }
 
-  const handleAddNewCard = () => {
+  const handleAddNewCard = async () => {
     if (!cardInputValue) {
       toast.error('Please fill in this box', {
         transition: Zoom
       })
       return
     }
+
+    // call API 
+    const newCardData = {
+      title: cardInputValue,
+      columnId: column._id
+    }
+
+    await createNewCard(newCardData)
 
     toggleOpenNewCardForm()
     setCardInputValue('')
