@@ -92,7 +92,6 @@ function BoardContent({
         // add placeholdercard if column is empty: when all cards within the column are dragged to another cards, and there isn't a placeholdercard any card in the column
         if (isEmpty(nextActiveColumn.cards)) {
           nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
-
         }
 
         // reupdate cardOrderIds 
@@ -114,7 +113,6 @@ function BoardContent({
 
         // remove placeholdercard if column is empty 
         nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
-
 
         // reupdate cardOrderIds 
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
