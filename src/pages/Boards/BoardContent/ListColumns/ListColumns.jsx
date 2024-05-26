@@ -11,7 +11,7 @@ import { Zoom } from 'react-toastify'
 
 
 
-function ListColumns({ columns, createNewColumn, createNewCard }) {
+function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
   /*
     SortableContext requires items as an array type value, ['id-1', 'id-2] not [{id: 'id-1}, {id: 'id-2}']
     If the the items param is passed in with an incorrect form, dragging and dropping still work but without animation
@@ -57,7 +57,12 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
       }}
       >
         {columns?.map(column => (
-          <Column key={column._id} column={column} createNewCard={createNewCard} />
+          <Column
+            key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
+          />
         ))}
 
         {!openNewColumnForm

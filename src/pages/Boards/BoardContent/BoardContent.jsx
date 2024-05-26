@@ -28,7 +28,8 @@ function BoardContent({
   createNewCard,
   moveColumns,
   moveCardInTheSameColumn,
-  moveCardToDifferentColumn
+  moveCardToDifferentColumn,
+  deleteColumnDetails
 }) {
   //Require the mouse to move by 10 pixels before activating, fix the case calling event when click
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
@@ -338,6 +339,7 @@ function BoardContent({
             columns={orderedColumns}
             createNewColumn={createNewColumn}
             createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
           />
           <DragOverlay dropAnimation={dropAnimation}>
             {(!activeDragItemId || !activeDragItemType) && null}
