@@ -4,9 +4,10 @@ if (process.env.BUILD_MODE === 'dev')
   apiRoot = 'http://localhost:8017'
 }
 
+
 if (process.env.BUILD_MODE === 'production')
 {
-  apiRoot = 'https://dngdung.vercel.app/'
+  apiRoot = 'https://trello-api-sj00.onrender.com'
 }
 
 export const API_ROOT = apiRoot
